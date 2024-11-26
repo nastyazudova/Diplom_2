@@ -23,10 +23,6 @@ public class UserCredentials {
         return new UserCredentials(user.getEmail(), null, user.getName());
     }
 
-    public static UserCredentials fromUserWithoutName(praktikum.user.User user) {
-        return new UserCredentials(user.getEmail(), user.getPassword(), null);
-    }
-
     public static UserCredentials fromUserWithWrongEmail(praktikum.user.User user) {
         return new UserCredentials(user.getEmail() + "a1", user.getPassword(), user.getName());
     }
@@ -34,8 +30,9 @@ public class UserCredentials {
     public static UserCredentials fromUserWithWrongPassword(praktikum.user.User user) {
         return new UserCredentials(user.getEmail(), user.getPassword() + "a1", user.getName());
     }
-    public static UserCredentials fromUserWithWrongName(praktikum.user.User user) {
-        return new UserCredentials(user.getEmail(), user.getPassword(), user.getName() + "a1");
+
+    public static UserCredentials fromUserWithNewData(praktikum.user.User user) {
+        return new UserCredentials(user.getEmail() + "a1", user.getPassword() + "a1", user.getName() + "a1");
     }
 
     public String getEmail() {

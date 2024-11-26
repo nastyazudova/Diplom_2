@@ -62,7 +62,7 @@ public class LoggingInUserTest {
 
         var creds = UserCredentials.fromUserWithWrongEmail(user);
         ValidatableResponse loginResponse = client.logIn(creds);
-        check.checkNotLoggedInWithWrongLoginOrPassword(loginResponse);
+        check.checkNotLoggedInWithWrongEmailOrPassword(loginResponse);
     }
 
     @Test
@@ -73,6 +73,6 @@ public class LoggingInUserTest {
 
         var creds = UserCredentials.fromUserWithWrongPassword(user);
         ValidatableResponse loginResponse = client.logIn(creds);
-        check.checkNotLoggedInWithWrongLoginOrPassword(loginResponse);
+        check.checkNotLoggedInWithWrongEmailOrPassword(loginResponse);
     }
 }

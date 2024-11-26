@@ -11,12 +11,12 @@ public class User {
     private final String name;
 
     static User random() {
-        return new User("Jack" + RandomStringUtils.randomAlphanumeric(5, 15) + "@yandex.ru",
+        return new User("jack" + RandomStringUtils.randomNumeric(5, 15) + "@yandex.ru",
                 "P@ssw0rd123", "Sparrow");
     }
 
     static User withoutPassword() {
-        return new User("Jack" + RandomStringUtils.randomAlphanumeric(5, 15) + "@yandex.ru",
+        return new User("jack" + RandomStringUtils.randomNumeric(5, 15) + "@yandex.ru",
                 null, "Sparrow");
     }
 
@@ -26,7 +26,7 @@ public class User {
     }
 
     static User withoutName() {
-        return new User("Jack" + RandomStringUtils.randomAlphanumeric(5, 15) + "@yandex.ru",
+        return new User("jack" + RandomStringUtils.randomNumeric(5, 15) + "@yandex.ru",
                 "P@ssw0rd123", null);
     }
 }

@@ -85,8 +85,8 @@ public class UserChecks {
 
     }
 
-    @Step("не залогинился с неправильным логином или паролем")
-    public void checkNotLoggedInWithWrongLoginOrPassword(ValidatableResponse loginResponse) {
+    @Step("не залогинился с неправильным имейлом или паролем")
+    public void checkNotLoggedInWithWrongEmailOrPassword(ValidatableResponse loginResponse) {
         var body = loginResponse
                 .assertThat()
                 .statusCode(HTTP_UNAUTHORIZED)
@@ -110,5 +110,44 @@ public class UserChecks {
                 .extract()
                 .path("success");
         assertTrue(created);
+    }
+
+    @Step("имейл успешно изменился")
+    public void checkChangedEmail(UserCredentials user, ValidatableResponse response) {
+        String created = response
+                .assertThat()
+                .statusCode(HTTP_OK)
+                .extract()
+                .path("user.email");
+
+        assertEquals(created, user.getEmail());
+    }
+
+    @Step("имя успешно изменилось")
+    public void checkChangedName(UserCredentials user, ValidatableResponse response) {
+        String created = response
+                .assertThat()
+                .statusCode(HTTP_OK)
+                .extract()
+                .path("user.name");
+
+        assertEquals(created, user.getName());
+    }
+
+    @Step("нельзя изменить данные не залогинившись")
+    public void checkFailedChanged(ValidatableResponse Response) {
+        var body = Response
+                .assertThat()
+                .statusCode(HTTP_UNAUTHORIZED)
+                .extract()
+                .body().as(Map.class);
+
+
+        SoftAssertions soft = new SoftAssertions();
+        soft.assertThat(body.get("message"))
+                .isEqualTo("You should be authorised");
+        soft.assertThat(body.keySet())
+                .isEqualTo(Set.of("success", "message"));
+        soft.assertAll();
     }
 }

@@ -34,6 +34,18 @@ public class UserClient extends praktikum.Client {
                 .delete(USER_PATH + "/user")
                 .then().log().all();
     }
+
+    @Step("изменить данные  пользователя")
+    public ValidatableResponse changeUserData(praktikum.user.UserCredentials user, String bearerToken) {
+        return spec()
+                .body(user)
+                .headers("Content-type", "application/json", "Authorization", "Bearer" + bearerToken)
+                .when()
+                .patch(USER_PATH + "/user")
+                .then().log().all();
+    }
+
+
 }
 
 
