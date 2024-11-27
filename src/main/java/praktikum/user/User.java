@@ -10,7 +10,7 @@ public class User {
     private final String password;
     private final String name;
 
-    static User random() {
+    public static User random() {
         return new User("jack" + RandomStringUtils.randomNumeric(5, 15) + "@yandex.ru",
                 "P@ssw0rd123", "Sparrow");
     }

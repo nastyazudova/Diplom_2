@@ -58,7 +58,6 @@ public class ChangeUserDataTest {
         var user = User.random();
         client.createUser(user);
 
-        var creds = UserCredentials.fromUserWithNewData(user);
         ValidatableResponse Response = client.changeUserData(UserCredentials.fromUserWithNewData(user), null);
         check.checkFailedChanged(Response);
     }

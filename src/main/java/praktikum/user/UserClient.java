@@ -3,7 +3,7 @@ package praktikum.user;
 import io.qameta.allure.Step;
 import io.restassured.response.ValidatableResponse;
 
-import java.util.Map;
+
 
 public class UserClient extends praktikum.Client {
     private static final String USER_PATH = "auth";
