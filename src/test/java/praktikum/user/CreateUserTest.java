@@ -5,7 +5,7 @@ import io.restassured.response.ValidatableResponse;
 import org.junit.After;
 import org.junit.Test;
 
-public class MakingUserTest {
+public class CreateUserTest {
     private UserClient client = new UserClient();
     private UserChecks check = new UserChecks();
 
