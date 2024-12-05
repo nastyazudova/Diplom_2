@@ -21,7 +21,7 @@ public class ChangeUserDataTest {
 
     @Test
     @DisplayName("можно залогиниться и поменять данные пользователя")
-    public void userMakingLoggingAndChanging() {
+    public void userCreatingLoggingAndChanging() {
         var user = User.random();
         client.createUser(user);
 
@@ -40,7 +40,7 @@ public class ChangeUserDataTest {
 
     @Test
     @DisplayName("НЕ залогиниться и поменять данные пользователя")
-    public void userMakingAndChanging() {
+    public void userCreatingAndChanging() {
         var user = User.random();
         client.createUser(user);
 
@@ -54,7 +54,7 @@ public class ChangeUserDataTest {
 
     @Test
     @DisplayName("НЕЛЬЗЯ НЕ залогиниться и поменять данные пользователя")
-    public void userMakingAndChangingNot() {
+    public void userCreatingAndChangingNot() {
         var user = User.random();
         client.createUser(user);
 

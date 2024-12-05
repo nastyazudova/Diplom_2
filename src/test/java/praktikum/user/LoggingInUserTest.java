@@ -22,7 +22,7 @@ public class LoggingInUserTest {
 
     @Test
     @DisplayName("пользователь может залогиниться")
-    public void userMakingAndLogging() {
+    public void userCreatingAndLogging() {
         var user = User.random();
         client.createUser(user);
 

@@ -8,22 +8,19 @@ import praktikum.user.UserChecks;
 import praktikum.user.UserClient;
 import praktikum.user.UserCredentials;
 
-public class OrderMakingTest {
-    private UserClient client = new UserClient();
-    private OrderClient client1 = new OrderClient();
-    private UserChecks check = new UserChecks();
-    private OrderChecks check1 = new OrderChecks();
+public class OrderCreatingTest {
+    private UserClient userClient = new UserClient();
+    private OrderClient orderClient = new OrderClient();
+    private UserChecks userChecks = new UserChecks();
+    private OrderChecks orderChecks = new OrderChecks();
 
-    private String bun = "61c0c5a71d1f82001bdaaa6c";
-    private String sauce= "61c0c5a71d1f82001bdaaa75";
-    private String filling = "61c0c5a71d1f82001bdaaa76";
     private String bearerToken;
 
     @After
     public void deleteUser() {
         if (bearerToken != null) {
-            ValidatableResponse response = client.delete(bearerToken);
-            check.deleted(response);
+            ValidatableResponse response = userClient.delete(bearerToken);
+            userChecks.deleted(response);
         }
     }
 
@@ -31,62 +28,109 @@ public class OrderMakingTest {
     @DisplayName("МОЖНО создать заказ c авторизацией и правильными ингредиентами")
     public void createOrderAllWright() {
         var user = User.random();
-        client.createUser(user);
+        userClient.createUser(user);
 
         var creds = UserCredentials.fromUser(user);
-        ValidatableResponse loginResponse = client.logIn(creds);
-        bearerToken = check.checkLoggedIn(loginResponse);
+        ValidatableResponse loginResponse = userClient.logIn(creds);
+        bearerToken = userChecks.checkLoggedIn(loginResponse);
 
-        ValidatableResponse createResponse = client1.createOrderAllWright(bearerToken, bun, sauce, filling);
-        check1.checkCreated(createResponse);
+        String[] ingredients = OrderClient.getIngredients();
+        ValidatableResponse createResponse = orderClient.createOrderAllWright(bearerToken, ingredients);
+        orderChecks.checkCreated(createResponse);
     }
 
     @Test
-    @DisplayName("НЕЛЬЗЯ создать заказ c авторизацией и неверным хэшем ингредиентов")
-    public void createOrderAuthIngrWrongHash() {
+    @DisplayName("НЕЛЬЗЯ создать заказ c авторизацией и неверным хэшем ингредиентов (заменить знак в хэше)")
+    public void createOrderAuthIngrWrongHashSignReplaced() {
         var user = User.random();
-        client.createUser(user);
+        userClient.createUser(user);
 
         var creds = UserCredentials.fromUser(user);
-        ValidatableResponse loginResponse = client.logIn(creds);
-        bearerToken = check.checkLoggedIn(loginResponse);
+        ValidatableResponse loginResponse = userClient.logIn(creds);
+        bearerToken = userChecks.checkLoggedIn(loginResponse);
 
-        ValidatableResponse createResponse = client1.createOrderAllWright(bearerToken, bun+1, sauce+1, filling+1);
-        check1.checkNotCreatedWrongHash(createResponse);
+        String[] ingredients = OrderClient.getIngredients();
+        String[] wrongHashIngredients = ingredients.clone();
+        for(int i = 0; i< wrongHashIngredients.length; i++) {
+            wrongHashIngredients[i] = wrongHashIngredients[i].replace("0", "2");
+        }
+
+        ValidatableResponse createResponse = orderClient.createOrderAllWright(bearerToken, wrongHashIngredients);
+        orderChecks.checkNotCreatedWrongHash(createResponse);
+    }
+    @Test
+    @DisplayName("НЕЛЬЗЯ создать заказ c авторизацией и неверным хэшем ингредиентов (прибавить число к хэшу)")
+    public void createOrderAuthIngrWrongHashNumberAdded() {
+        var user = User.random();
+        userClient.createUser(user);
+
+        var creds = UserCredentials.fromUser(user);
+        ValidatableResponse loginResponse = userClient.logIn(creds);
+        bearerToken = userChecks.checkLoggedIn(loginResponse);
+
+        String[] ingredients = OrderClient.getIngredients();
+        String[] wrongHashIngredients = ingredients.clone();
+        for(int i = 0; i< wrongHashIngredients.length; i++) {
+            wrongHashIngredients[i] = wrongHashIngredients[i]+"1";
+        }
+
+        ValidatableResponse createResponse = orderClient.createOrderAllWright(bearerToken, wrongHashIngredients);
+        orderChecks.checkNotCreatedWrongHash(createResponse);
     }
 
     @Test
-    @DisplayName("создать заказ с авторизацией без ингредиентов")
+    @DisplayName("НЕЛЬЗЯ создать заказ с авторизацией без ингредиентов")
     public void createOrderWithoutIngredients() {
         var user = User.random();
-        client.createUser(user);
+        userClient.createUser(user);
 
         var creds = UserCredentials.fromUser(user);
-        ValidatableResponse loginResponse = client.logIn(creds);
-        bearerToken = check.checkLoggedIn(loginResponse);
+        ValidatableResponse loginResponse = userClient.logIn(creds);
+        bearerToken = userChecks.checkLoggedIn(loginResponse);
 
-        ValidatableResponse createResponse = client1.createOrderWithoutIngredients(bearerToken);
-        check1.checkNotCreatedWithoutIngredients(createResponse);
+        ValidatableResponse createResponse = orderClient.createOrderWithoutIngredients(bearerToken);
+        orderChecks.checkNotCreatedWithoutIngredients(createResponse);
     }
 
     @Test
     @DisplayName("МОЖНО создать заказ без авторизации с правильными ингредиентами")
     public void createOrderWithoutAuth() {
-        ValidatableResponse createResponse = client1.createOrderWithoutAuth(bun, sauce, filling);
-        check1.checkCreated(createResponse);
+        String[] ingredients = OrderClient.getIngredients();
+        ValidatableResponse createResponse = orderClient.createOrderWithoutAuth(ingredients);
+        orderChecks.checkCreated(createResponse);
+    }
+
+
+    @Test
+    @DisplayName("НЕЛЬЗЯ создать заказ без авторизации и неверным хэшем ингредиентов (заменить знак в хэше)")
+    public void createOrderWithoutAuthWrongHashSignReplaced() {
+        String[] ingredients = OrderClient.getIngredients();
+        String[] wrongHashIngredients = ingredients.clone();
+        for(int i = 0; i< wrongHashIngredients.length; i++) {
+            wrongHashIngredients[i] = wrongHashIngredients[i].replace("0", "2");
+        }
+
+        ValidatableResponse createResponse = orderClient.createOrderWithoutAuth(wrongHashIngredients);
+        orderChecks.checkNotCreatedWrongHash(createResponse);
     }
 
     @Test
-    @DisplayName("НЕЛЬЗЯ создать заказ без авторизации и неверным хэшем ингредиентов")
-    public void createOrderWithoutAuthWrongHash() {
-        ValidatableResponse createResponse = client1.createOrderWithoutAuth(bun+1, sauce+1, filling+1);
-        check1.checkNotCreatedWrongHash(createResponse);
+    @DisplayName("НЕЛЬЗЯ создать заказ без авторизации и неверным хэшем ингредиентов (прибавить число к хэшу)")
+    public void createOrderWithoutAuthWrongHashNumberAdded() {
+        String[] ingredients = OrderClient.getIngredients();
+        String[] wrongHashIngredients = ingredients.clone();
+        for(int i = 0; i< wrongHashIngredients.length; i++) {
+            wrongHashIngredients[i] = wrongHashIngredients[i] + "1";
+        }
+
+        ValidatableResponse createResponse = orderClient.createOrderWithoutAuth(wrongHashIngredients);
+        orderChecks.checkNotCreatedWrongHash(createResponse);
     }
 
     @Test
     @DisplayName("создать заказ без авторизации и ингредиентов")
     public void createOrderWithoutAuthAndIngredients() {
-        ValidatableResponse createResponse = client1.createOrderWithoutAuthAndIngredients();
-        check1.checkNotCreatedWithoutIngredients(createResponse);
+        ValidatableResponse createResponse = orderClient.createOrderWithoutAuthAndIngredients();
+        orderChecks.checkNotCreatedWithoutIngredients(createResponse);
     }
 }

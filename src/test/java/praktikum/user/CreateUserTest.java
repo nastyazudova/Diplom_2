@@ -21,7 +21,7 @@ public class CreateUserTest {
 
     @Test
     @DisplayName("пользователя можно создать")
-    public void userMaking() {
+    public void userCreating() {
         var user = User.random();
         ValidatableResponse createResponse = client.createUser(user);
         check.checkCreated(createResponse);
